@@ -52,16 +52,22 @@ struct ContentView: View {
                     NavigationLink("How to Play", destination: InstructionsView())
                         .font(Font.custom("Marker Felt", size: 24))
                         .padding()
+                    
+                    Button("Reset"){
+                        endTurn()
+                        gameScore = 0
+                    }
+                    .font(Font.custom("Marker Felt", size: 24))
                 }
-                Spacer()
             }
-            .alert(isPresented: $gameOver, content: {
-                Alert(title: Text("You won the game!"), dismissButton: .destructive(Text("Play again?"), action: { withAnimation {
-                    gameScore = 0
-                    gameOver = false
-                }
-                }))
-            })
+            Spacer()
+                .alert(isPresented: $gameOver, content: {
+                    Alert(title: Text("You won the game!"), dismissButton: .destructive(Text("Play again?"), action: { withAnimation {
+                        gameScore = 0
+                        gameOver = false
+                    }
+                    }))
+                })
         }
     }
     func endTurn() {
