@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var gameScore = 0
     @State private var randomValue = 0
     @State private var rotation = 0.0
+    @State private var gameOver = false
     var body: some View {
         NavigationView{
             ZStack{
@@ -41,6 +42,9 @@ struct ContentView: View {
                             withAnimation(.easeInOut(duration: 1)){
                                 rotation += 360
                             }
+                            if gameScore >= 100 {
+                                gameOver = true
+                            }
                         }
                         .buttonStyle(CustomButtonStyle())
                     }
@@ -50,23 +54,27 @@ struct ContentView: View {
                         .padding()
                 }
                 Spacer()
-                
-                
-                
             }
+            .alert(isPresented: $gameOver, content: {
+                Alert(title: Text("You won the game!"), dismissButton: .destructive(Text("Play again?"), action: { withAnimation {
+                    gameScore = 0
+                    gameOver = false
+                }
+                }))
+            })
         }
-        }
+    }
     func endTurn() {
         turnScore = 0
         randomValue = 0
     }
     func chooseRandom(times: Int){
         if times > 0{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    randomValue = Int.random(in: 1...6)
-                    chooseRandom(times: times - 1)
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                randomValue = Int.random(in: 1...6)
+                chooseRandom(times: times - 1)
             }
+        }
         if times == 0{
             if randomValue == 1{
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1){
@@ -105,23 +113,23 @@ struct InstructionsView: View {
                 CustomText(text: "Pig")
                 VStack(alignment: .leading) {
                     Text("In the game of Pig, players take individual turns. Each turn, a player repeatedly rolls a single die until either a pig is rolled or the player decides to \"hold\".")
-                       .padding()
+                        .padding()
                     Text("If a player rolls a pig, they score nothing and it is the next player's turn.")
                         .padding ( )
                     Text("If the player rolls any other number, it is added to their turn total, and the player's turn continues.")
                         .padding()
                     Text("If the player chooses to \"hold\", their turn total is added to the game score, and it becomes the next player's turn.")
-                    .padding ()
-                Text("A player wins the game when the game score becomes 100 or more on their turn.")
-                    .padding ( )
+                        .padding ()
+                    Text("A player wins the game when the game score becomes 100 or more on their turn.")
+                        .padding ( )
                 }
                 Spacer()
             }
         }
     }
 }
-    
-    #Preview {
-        ContentView()
+
+#Preview {
+    ContentView()
 }
 
