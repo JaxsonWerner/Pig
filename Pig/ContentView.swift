@@ -42,7 +42,7 @@ struct ContentView: View {
                             withAnimation(.easeInOut(duration: 1)){
                                 rotation += 360
                             }
-                            if gameScore >= 100 {
+                            if gameScore >= 100 || turnScore >= 100 {
                                 gameOver = true
                             }
                         }
@@ -59,8 +59,6 @@ struct ContentView: View {
                     }
                     .font(Font.custom("Marker Felt", size: 24))
                 }
-            }
-            Spacer()
                 .alert(isPresented: $gameOver, content: {
                     Alert(title: Text("You won the game!"), dismissButton: .destructive(Text("Play again?"), action: { withAnimation {
                         gameScore = 0
@@ -68,12 +66,16 @@ struct ContentView: View {
                     }
                     }))
                 })
+            }
+            Spacer()
         }
     }
+    
     func endTurn() {
         turnScore = 0
         randomValue = 0
     }
+    
     func chooseRandom(times: Int){
         if times > 0{
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -94,12 +96,14 @@ struct ContentView: View {
         
     }
 }
+
 struct CustomText: View{
     let text: String
     var body: some View{
         Text(text).font(Font.custom("Marker Felt", size: 36))
     }
 }
+
 struct CustomButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -111,10 +115,11 @@ struct CustomButtonStyle: ButtonStyle {
             .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
+
 struct InstructionsView: View {
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.7).frame(width: 150, height: 150)
+            Color.gray.opacity(0.7).ignoresSafeArea()
             VStack {
                 Image("Pig").resizable().frame(width: 150, height: 150)
                 CustomText(text: "Pig")
